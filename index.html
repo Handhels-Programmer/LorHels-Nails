@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="do">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LorHels Nails | Premium Salon & Supply</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'dark-bg': '#0F172A',
+                            'dark-surface': '#1E293B',
+                            'neon-blue': '#3B82F6',
+                            'neon-cyan': '#00D4FF',
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            brand: ['Playfair Display', 'serif'],
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            .text-gradient { background: linear-gradient(to right, #3B82F6, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+            .page-transition { transition: all 0.4s ease; }
+            .hidden-view { display: none !important; opacity: 0; }
+            .active-view { opacity: 1; animation: fadeIn 0.4s ease; }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            ::-webkit-scrollbar { width: 8px; }
+            ::-webkit-scrollbar-track { background: #0F172A; }
+            ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; }
+            #public-products-grid img { max-width: 100%; display: block; }
+            .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        </style>
+    </head>
+    <body class="bg-dark-bg text-gray-200 min-h-screen selection:bg-neon-blue selection:text-white">
+        <div id="toast-container" class="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+        <nav class="fixed top-0 w-full z-50 glass">
+            <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="showView('home')">
+                    <span class="font-brand text-2xl font-bold tracking-wider text-white">LorHels <span class="text-neon-cyan">Nails</span></span>
+                </div>
+                <div class="hidden md:flex items-center gap-8 font-medium">
+                    <button onclick="showView('home')" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Inicio</button>
+                    <button onclick="showView('booking')" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Reservar Cita</button>
+                    <button onclick="showView('supply')" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Tienda Supply</button>
+                    <button onclick="showView('admin')" class="bg-neon-blue text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-500 transition shadow-[0_0_15px_rgba(59,130,246,0.5)] uppercase tracking-wider">Admin</button>
+                </div>
+                <button class="md:hidden text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="menu" size="28"></i></button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="fixed inset-0 z-[60] bg-dark-bg hidden flex-col items-center justify-center gap-10 text-2xl font-brand font-bold">
+            <button class="absolute top-8 right-8 text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="x" size="32"></i></button>
+            <button onclick="showView('home'); toggleMobileMenu()" class="hover:text-neon-cyan transition">Inicio</button>
+            <button onclick="showView('booking'); toggleMobileMenu()" class="hover:text-neon-cyan transition">Reservar Cita</button>
+            <button onclick="showView('supply'); toggleMobileMenu()" class="hover:text-neon-cyan transition">Tienda Supply</button>
+            <button onclick="showView('admin'); toggleMobileMenu()" class="text-neon-blue">Panel Admin</button>
+        </div>
+        <main class="pt-20">
+            <section id="view-home" class="page-transition active-view">
+                <div class="relative h-[85vh] flex items-center justify-center overflow-hidden">
+                    <div class="absolute inset-0 bg-dark-bg z-0"></div>
+                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-20 mix-blend-luminosity z-0"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-dark-bg/50 via-dark-bg/80 to-dark-bg z-0"></div>
+                    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+                        <div class="inline-flex items-center px-4 py-2 rounded-full border border-neon-blue/30 bg-neon-blue/10 text-neon-cyan text-sm font-medium mb-8">
+                            ✨ Elevando el arte de tus uñas
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-brand font-bold text-white mb-6 leading-tight">
+                            Belleza, Precisión y <br>
+                            <span class="text-gradient">Estilo Premium</span>
+                        </h1>
+                        <p class="text-gray-400 mb-10 text-lg md:text-xl font-light">
+                            Reserva tu cita con nuestras especialistas o adquiere los mejores productos para profesionales en nuestra tienda online.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button onclick="showView('booking')" class="bg-gradient-to-r from-neon-blue to-neon-cyan text-white px-8 py-4 rounded-full font-bold text-lg hover:shadow-[0_0_25px_rgba(59,130,246,0.6)] transition-all">
+                                Agendar mi cita 💅
+                            </button>
+                            <button onclick="showView('supply')" class="bg-dark-surface border border-slate-600 hover:border-neon-blue text-white px-8 py-4 rounded-full font-bold text-lg transition-all">
+                                Ver Tienda Supply 🛍️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 py-20">
+                    <div class="text-center mb-16">
+                        <h2 class="text-3xl font-brand font-bold text-white mb-4">Nuestros Servicios</h2>
+                        <div class="h-1 w-20 bg-neon-blue mx-auto rounded-full"></div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="bg-dark-surface p-8 rounded-2xl border border-slate-700 hover:border-neon-blue transition-colors duration-300 text-center group">
+                            <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition">✨</div>
+                            <h3 class="text-xl font-bold text-white mb-3">Acrílicas Premium</h3>
+                            <p class="text-gray-400 text-sm mb-6">Diseños personalizados, estructura perfecta y máxima durabilidad.</p>
+                        </div>
+                        <div class="bg-dark-surface p-8 rounded-2xl border border-slate-700 hover:border-neon-blue transition-colors duration-300 text-center group">
+                            <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition">💧</div>
+                            <h3 class="text-xl font-bold text-white mb-3">Gel Color & Rubber</h3>
+                            <p class="text-gray-400 text-sm mb-6">Cuidado natural, alineación y colores en tendencia.</p>
+                        </div>
+                        <div class="bg-dark-surface p-8 rounded-2xl border border-slate-700 hover:border-neon-blue transition-colors duration-300 text-center group">
+                            <div class="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 group-hover:scale-110 transition">🌸</div>
+                            <h3 class="text-xl font-bold text-white mb-3">Pedicura Spa</h3>
+                            <p class="text-gray-400 text-sm mb-6">Relajación total, limpieza profunda y esmaltado impecable.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="view-booking" class="page-transition hidden-view p-4 max-w-5xl mx-auto py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-brand font-bold text-white mb-2">Reserva tu Cita</h2>
+                    <p class="text-gray-400">Selecciona tu servicio y horario ideal</p>
+                </div>
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-8">
+                        <form id="booking-form" class="bg-dark-surface p-8 rounded-3xl border border-slate-700 space-y-8">
+                            <div>
+                                <label class="block text-neon-cyan text-xs font-bold uppercase mb-4 tracking-widest">1. Selecciona el Servicio</label>
+                                <div id="dynamic-services" class="grid grid-cols-1 md:grid-cols-2 gap-4">Cargando servicios...</div>
+                            </div>
+                            <div>
+                                <label class="block text-neon-cyan text-xs font-bold uppercase mb-4 tracking-widest">2. Especialista</label>
+                                <select id="book-barber" required class="w-full bg-[#0B1121] border border-slate-600 text-white p-4 rounded-xl focus:border-neon-blue outline-none">
+                                    <option value="">Cargando especialistas...</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-neon-cyan text-xs font-bold uppercase mb-4 tracking-widest">3. Fecha</label>
+                                    <input type="date" id="book-date" required class="w-full bg-[#0B1121] border border-slate-600 text-white p-4 rounded-xl focus:border-neon-blue outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-neon-cyan text-xs font-bold uppercase mb-4 tracking-widest">Hora</label>
+                                    <select id="book-time" required class="w-full bg-[#0B1121] border border-slate-600 text-white p-4 rounded-xl focus:border-neon-blue outline-none">
+                                        <option value="" disabled selected>Selecciona fecha primero</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-neon-cyan text-xs font-bold uppercase mb-4 tracking-widest">4. Tus Datos</label>
+                                <div class="space-y-4">
+                                    <input type="text" id="book-name" placeholder="Nombre completo" required class="w-full bg-[#0B1121] border border-slate-600 text-white p-4 rounded-xl focus:border-neon-blue outline-none">
+                                    <input type="tel" id="book-phone" placeholder="WhatsApp (Ej: 829...)" required class="w-full bg-[#0B1121] border border-slate-600 text-white p-4 rounded-xl focus:border-neon-blue outline-none">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-neon-blue to-neon-cyan hover:from-blue-600 hover:to-blue-400 text-white font-bold py-4 rounded-xl transition-all shadow-lg text-lg">
+                                Confirmar Reserva vía WhatsApp
+                            </button>
+                        </form>
+                    </div>
+                    <div class="lg:col-span-4">
+                        <div class="bg-dark-surface border border-slate-700 rounded-3xl p-6 sticky top-24">
+                            <h3 class="text-white font-bold mb-4 flex items-center gap-2"><div class="w-2 h-2 bg-neon-cyan rounded-full animate-pulse"></div> Horarios Hoy</h3>
+                            <div id="availability-status" class="space-y-4">
+                                <p class="text-gray-500 text-sm italic">Selecciona una fecha para ver disponibilidad.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="view-supply" class="page-transition hidden-view max-w-7xl mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-800 shadow-xl">
+                            <h2 class="text-3xl font-brand font-bold text-white mb-6">Supply Shop</h2>
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <i data-lucide="search" class="absolute left-4 top-3.5 text-gray-500" size="18"></i>
+                                    <input type="text" id="product-search" oninput="window.renderProducts()" placeholder="Buscar producto..." 
+                                    class="w-full bg-[#0B1121] border border-slate-700 p-3 pl-12 rounded-xl outline-none focus:border-neon-cyan text-white">
+                                </div>
+                                <div id="category-filters" class="flex flex-wrap gap-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="public-products-grid" class="space-y-10"></div>
+                    </div>
+                    <aside class="lg:col-span-4">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 sticky top-24 shadow-2xl">
+                            <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
+                                <i data-lucide="shopping-bag" class="text-neon-cyan"></i>
+                                <h3 class="font-bold text-xl">Tu Pedido</h3>
+                            </div>
+                            <div id="cart-items-list" class="space-y-4 max-h-[50vh] overflow-y-auto mb-6 custom-scrollbar pr-2">
+                                <p class="text-center text-gray-500 py-10">El carrito está vacío</p>
+                            </div>
+                            <div class="border-t border-slate-800 pt-4 space-y-2">
+                                <div class="flex justify-between text-gray-400 text-sm">
+                                    <span>Subtotal</span>
+                                    <span id="cart-subtotal">RD$ 0</span>
+                                </div>
+                                <div class="flex justify-between text-white font-bold text-lg pt-2">
+                                    <span>Total</span>
+                                    <span id="cart-total-value" class="text-neon-cyan">RD$ 0</span>
+                                </div>
+                            </div>
+                            <button onclick="checkoutWhatsApp()" class="w-full mt-6 bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-green-900/20">
+                                <i data-lucide="message-circle"></i> Enviar por WhatsApp
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+            <section id="view-login" class="page-transition hidden-view flex items-center justify-center min-h-[70vh] px-4">
+                <div class="bg-dark-surface p-8 rounded-3xl border border-slate-700 w-full max-w-md">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-brand font-bold text-white">Acceso Admin</h2>
+                    </div>
+                    <form id="login-form" class="space-y-4">
+                        <input type="email" id="login-email" placeholder="Correo" required class="w-full bg-[#0B1121] border border-slate-600 rounded-xl p-4 text-white outline-none focus:border-neon-blue">
+                        <input type="password" id="login-pass" placeholder="Contraseña" required class="w-full bg-[#0B1121] border border-slate-600 rounded-xl p-4 text-white outline-none focus:border-neon-blue">
+                        <button type="submit" class="w-full bg-neon-blue text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-500">Entrar</button>
+                    </form>
+                </div>
+            </section>
+            <section id="view-admin" class="page-transition hidden-view p-4 md:p-8 max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
+                    <div>
+                        <h1 class="text-3xl font-brand font-bold text-white">Panel de Control</h1>
+                        <p class="text-gray-400 mt-1">Gestión de Salón & Supply</p>
+                    </div>
+                    <button onclick="window.logout()" class="text-sm text-red-400 hover:text-white flex items-center gap-2 px-4 py-2 bg-red-500/10 rounded-full transition border border-red-500/30"><i data-lucide="log-out" size="16"></i> Cerrar Sesión</button>
+                </div>
+                <div class="flex gap-6 mb-8 border-b border-slate-700 pb-4 overflow-x-auto scrollbar-hide">
+                    <button onclick="switchAdminTab('agenda')" id="tab-agenda" class="text-neon-cyan font-bold uppercase tracking-widest text-sm border-b-2 border-neon-cyan pb-4 -mb-4 whitespace-nowrap">📅 Agenda & Ventas</button>
+                    <button onclick="switchAdminTab('pos')" id="tab-pos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">💳 POS (Caja)</button>
+                    <button onclick="switchAdminTab('servicios')" id="tab-servicios" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">💅 Servicios</button>
+                    <button onclick="switchAdminTab('productos')" id="tab-productos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">🛍️ Tienda Supply</button>
+                    <button onclick="switchAdminTab('barberos')" id="tab-barberos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">👥 Equipo</button>
+                </div>
+                <div id="admin-agenda" class="admin-panel block">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-dark-surface border border-slate-700 p-6 rounded-2xl"><p class="text-xs text-gray-400 uppercase font-bold mb-2">Movimientos Hoy</p><p id="stat-count" class="text-4xl font-bold text-neon-blue">0</p></div>
+                        <div class="bg-dark-surface border border-slate-700 p-6 rounded-2xl"><p class="text-xs text-gray-400 uppercase font-bold mb-2">Ingresos Estimados</p><p id="stat-revenue" class="text-4xl font-bold text-emerald-400">$0</p></div>
+                    </div>
+                    <div class="bg-dark-surface rounded-2xl border border-slate-700 overflow-hidden overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-[#0B1121] text-gray-400 uppercase font-bold">
+                                <tr><th class="px-6 py-4">Cliente / Pedido</th><th class="px-6 py-4">Detalle</th><th class="px-6 py-4">Fecha/Hora</th><th class="px-6 py-4">Estado</th><th class="px-6 py-4 text-right">Acción</th></tr>
+                            </thead>
+                            <tbody id="appointments-list" class="divide-y divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-pos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                            <h3 class="font-bold text-lg mb-4 text-neon-cyan flex items-center gap-2"><i data-lucide="scissors"></i> Cobro Servicio Salón</h3>
+                            <form id="form-pos-service" class="space-y-4">
+                                <input type="text" id="pos-service-client" placeholder="Nombre Cliente Local" class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <select id="pos-service-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue"></select>
+                                <select id="pos-barber-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue"></select>
+                                <button type="submit" class="w-full bg-neon-blue hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase transition">Registrar Pago</button>
+                            </form>
+                        </div>
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                            <h3 class="font-bold text-lg mb-4 text-emerald-400 flex items-center gap-2"><i data-lucide="shopping-bag"></i> Venta Supply (Local)</h3>
+                            <form id="form-pos-product" class="space-y-4">
+                                <select id="pos-product-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-emerald-400"></select>
+                                <input type="number" id="pos-product-qty" placeholder="Cantidad" required min="1" value="1" class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-emerald-400">
+                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold uppercase transition">Registrar Venta Directa</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-servicios" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-service" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4">Añadir Servicio</h3>
+                                <input type="text" id="new-srv-name" placeholder="Ej: Retoque Acrílico" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-srv-price" placeholder="Precio (RD$)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase">Guardar</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <h3 class="font-bold mb-4">Servicios Activos</h3>
+                            <div id="services-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-productos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-product" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4 text-neon-cyan">Añadir Producto Supply</h3>
+                                <input type="text" id="new-prod-name" placeholder="Ej: Monómero 8oz" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="text" id="new-prod-category" placeholder="Categoría (Ej: Líquidos, Geles, Herramientas)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-prod-price" placeholder="Precio Venta (RD$)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-prod-stock" placeholder="Cantidad en Stock" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="text" id="new-prod-img" placeholder="URL Imagen (Opcional)" class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase hover:bg-blue-500 transition">Guardar Producto</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <h3 class="font-bold mb-4">Inventario Actual</h3>
+                            <div id="products-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-barberos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-barber" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4">Añadir Especialista</h3>
+                                <input type="text" id="new-barber-name" placeholder="Nombre" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="text" id="new-barber-role" placeholder="Especialidad (Ej: Nail Artist)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase">Agregar</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <div id="barbers-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+            import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, query, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+            import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyAq5GLx_AN0BtDNQp9aKQaPQZbzWHOt4Uw",
+                authDomain: "lorhels-nails.firebaseapp.com",
+                projectId: "lorhels-nails",
+                storageBucket: "lorhels-nails.firebasestorage.app",
+                messagingSenderId: "1022615730494",
+                appId: "1:1022615730494:web:cd265a085616854abd546f"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+            let isAdmin = false;        
+            let cart = [];
+
+            lucide.createIcons();
+
+            window.showView = (viewId) => {
+                if (viewId === 'admin' && !isAdmin) viewId = 'login'; 
+                document.querySelectorAll('section.page-transition').forEach(s => s.classList.replace('active-view', 'hidden-view'));
+                const target = document.getElementById('view-' + viewId);
+                if(target) { target.classList.replace('hidden-view', 'active-view'); window.scrollTo(0, 0); }
+            };
+
+            window.switchAdminTab = (tabId) => {
+                document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+                document.querySelectorAll('[id^="tab-"]').forEach(t => {
+                    t.classList.remove('text-neon-cyan', 'border-b-2', 'border-neon-cyan');
+                    t.classList.add('text-gray-500');
+                });
+                document.getElementById('admin-' + tabId).classList.remove('hidden');
+                const activeTab = document.getElementById('tab-' + tabId);
+                activeTab.classList.add('text-neon-cyan', 'border-b-2', 'border-neon-cyan');
+                activeTab.classList.remove('text-gray-500');
+            };
+
+            window.toggleMobileMenu = () => {
+                const m = document.getElementById('mobile-menu'); m.classList.toggle('hidden'); m.classList.toggle('flex');
+            };
+
+            onAuthStateChanged(auth, (user) => {
+                if (user && !user.isAnonymous) { isAdmin = true; syncAdminData(); } 
+                else { isAdmin = false; if(!user) signInAnonymously(auth); }
+                loadConfigData();
+            });
+
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                try {
+                    await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
+                    showView('admin');
+                } catch (err) { alert("Credenciales incorrectas"); }
+            });
+
+            window.logout = () => signOut(auth).then(() => location.reload());
+
+            function loadConfigData() {
+                let allProducts = []; 
+                let activeCategory = 'Todas';
+
+                onSnapshot(collection(db, 'productos'), (snap) => {
+                    allProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    window.renderProducts();
+                });
+
+                window.renderProducts = () => {
+                    const grid = document.getElementById('public-products-grid');
+                    const filterContainer = document.getElementById('category-filters');
+                    const searchTerm = (document.getElementById('product-search')?.value || "").toLowerCase();
+                    const categories = ['Todas', ...new Set(allProducts.map(p => p.category).filter(c => c))];
+                
+                    if(filterContainer) {
+                        filterContainer.innerHTML = categories.map(cat => `
+                            <button onclick="window.filterByCat('${cat}')" 
+                                class="px-4 py-1.5 rounded-full text-xs font-bold transition ${activeCategory === cat ? 'bg-neon-cyan text-black' : 'bg-slate-800 text-gray-400 hover:bg-slate-700'}">
+                                ${cat}
+                            </button>
+                        `).join('');
+                    }
+
+                    const filtered = allProducts.filter(p => {
+                        const matchesSearch = p.name.toLowerCase().includes(searchTerm);
+                        const matchesCat = activeCategory === 'Todas' || p.category === activeCategory;
+                        return matchesSearch && matchesCat;
+                    });
+
+                    grid.innerHTML = '';
+                    const grouped = filtered.reduce((acc, p) => {
+                        const cat = p.category || 'General';
+                        if (!acc[cat]) acc[cat] = [];
+                        acc[cat].push(p);
+                        return acc;
+                    }, {});
+
+                    for (const [catName, prods] of Object.entries(grouped)) {
+                        const section = document.createElement('div');
+                        section.className = "mb-12 w-full";
+                        section.innerHTML = `
+                            <h3 class="text-xl font-bold text-white mb-6 border-l-4 border-neon-cyan pl-4 uppercase tracking-tighter italic">${catName}</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                                ${prods.map(prod => `
+                                    <div class="bg-dark-surface rounded-2xl border border-slate-800 overflow-hidden flex flex-col group hover:border-neon-cyan/50 transition-all duration-300 shadow-lg">
+                                        <div class="aspect-square w-full overflow-hidden bg-slate-900">
+                                            <img src="${prod.img || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                        </div>
+                                        <div class="p-3 flex flex-col flex-grow">
+                                            <h4 class="text-[13px] text-gray-200 font-semibold leading-tight h-10 line-clamp-2">${prod.name}</h4>
+                                            <div class="mt-auto pt-2">
+                                                <p class="text-neon-cyan font-bold text-sm">RD$ ${prod.price}</p>
+                                                <p class="text-[10px] text-gray-500 mb-3 uppercase">Stock: ${prod.stock}</p>
+                                                <button onclick="window.addToCart('${prod.id}', '${prod.name.replace(/'/g, "\\'")}', ${prod.price})" 
+                                                        class="w-full bg-[#0B1121] hover:bg-neon-cyan hover:text-black py-2 rounded-xl text-[11px] font-black transition-all border border-slate-700 hover:border-neon-cyan">
+                                                    AGREGAR
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                        grid.appendChild(section);
+                    }
+                    lucide.createIcons();
+                };
+
+                window.filterByCat = (cat) => {
+                    activeCategory = cat;
+                    window.renderProducts();
+                };
+            }
+
+            window.renderCart = () => {
+                const container = document.getElementById('cart-items-list');
+                const totalLabel = document.getElementById('cart-total-value');
+                const subtotalLabel = document.getElementById('cart-subtotal');
+    
+                if (cart.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500 py-10">El carrito está vacío</p>';
+                    totalLabel.innerText = "RD$ 0";
+                    subtotalLabel.innerText = "RD$ 0";
+                    return;
+                }
+
+                let grandTotal = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const subtotal = item.price * item.qty;
+                    grandTotal += subtotal;
+                    return `
+                        <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 group">
+                            <div>
+                                <p class="text-white text-sm font-medium">${item.name}</p>
+                                <p class="text-xs text-gray-400">${item.qty} x RD$ ${item.price}</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-white font-bold text-sm">RD$ ${subtotal}</span>
+                                <button onclick="removeFromCart(${index})" class="text-red-500 opacity-0 group-hover:opacity-100 transition">
+                                <i data-lucide="x-circle" size="16"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                totalLabel.innerText = `RD$ ${grandTotal}`;
+                subtotalLabel.innerText = `RD$ ${grandTotal}`;
+                lucide.createIcons();
+            };
+
+            onSnapshot(collection(db, 'equipo'), (snap) => {
+                const clientBarb = document.getElementById('book-barber');
+                const adminBarb = document.getElementById('barbers-list');
+                const posBarb = document.getElementById('pos-barber-select');
+                if(clientBarb) clientBarb.innerHTML = '<option value="Cualquiera">Cualquiera disponible</option>';
+                if(adminBarb) adminBarb.innerHTML = '';
+                if(posBarb) posBarb.innerHTML = '<option value="">Atendido por...</option>';
+
+                snap.forEach(docSnap => {
+                    const b = docSnap.data();
+                    if(clientBarb) clientBarb.innerHTML += `<option value="${b.name}">${b.name} (${b.role})</option>`;
+                    if(adminBarb) adminBarb.innerHTML += `<div class="flex justify-between items-center p-3 bg-[#0B1121] border border-slate-700 rounded-xl"><div><p class="font-bold text-white">${b.name}</p><p class="text-xs text-gray-500">${b.role}</p></div><button onclick="window.deleteDocItem('equipo', '${docSnap.id}')" class="text-red-500"><i data-lucide="trash-2" size="16"></i></button></div>`;
+                    if(posBarb) posBarb.innerHTML += `<option value="${b.name}">${b.name}</option>`;
+                });
+                lucide.createIcons();
+            });
+
+            onSnapshot(collection(db, 'productos'), (snap) => {
+                const adminProd = document.getElementById('products-list');
+                const posProd = document.getElementById('pos-product-select');
+                const publicGrid = document.getElementById('public-products-grid');
+                
+                if(adminProd) adminProd.innerHTML = '';
+                if(posProd) posProd.innerHTML = '<option value="">Selecciona producto...</option>';
+                if(publicGrid) publicGrid.innerHTML = '';
+
+                snap.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const pId = docSnap.id;
+                    const low = p.stock <= 5;
+                    const imgUrl = p.img || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=500&h=500&fit=crop';
+                    
+                    if(adminProd) {
+                        adminProd.innerHTML += `
+                            <div class="flex justify-between items-center p-3 bg-[#0B1121] border ${low ? 'border-amber-500/50' : 'border-slate-700'} rounded-xl">
+                                <div><p class="font-bold text-white">${p.name} ${low ? '<span class="text-amber-500 text-[10px] uppercase ml-2 bg-amber-500/10 px-2 rounded">Stock Bajo</span>' : ''}</p><p class="text-sm text-neon-cyan">RD$ ${p.price}</p></div>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="window.updateStock('${pId}', -1)" class="w-6 h-6 bg-slate-800 rounded">-</button>
+                                 <span class="font-bold w-6 text-center">${p.stock}</span>
+                                    <button onclick="window.updateStock('${pId}', 1)" class="w-6 h-6 bg-slate-800 rounded">+</button>
+                                <button onclick="window.deleteDocItem('productos', '${pId}')" class="text-red-500 ml-2"><i data-lucide="trash-2" size="16"></i></button>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    if(posProd && p.stock > 0) {
+                        posProd.innerHTML += `<option value="${pId}|${p.name}|${p.price}|${p.stock}">${p.name} (RD$ ${p.price}) - Disp: ${p.stock}</option>`;
+                    }
+        
+                    if(publicGrid && p.stock > 0) {
+                        publicGrid.innerHTML += `
+                            <div class="bg-dark-surface rounded-2xl border border-slate-700 overflow-hidden group hover:border-neon-blue transition">
+                                <div class="h-40 bg-slate-800 relative overflow-hidden">
+                                <img src="${imgUrl}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="${p.name}">
+                            </div>
+                            <div class="p-4">
+                                <h4 class="font-bold text-white truncate">${p.name}</h4>
+                                <p class="text-neon-cyan font-bold mt-1">RD$ ${p.price}</p>
+                                <button onclick="addToCart('${pId}', '${p.name}', ${p.price})" class="mt-4 w-full bg-[#0B1121] hover:bg-neon-blue border border-slate-600 hover:border-neon-blue text-white py-2 rounded-lg text-sm transition font-bold">
+                                    Añadir al carrito
+                                </button>
+                            </div>
+                        </div>`;
+                    }
+                });
+                lucide.createIcons();
+            });
+        
+            document.getElementById('form-add-service').addEventListener('submit', async (e) => { e.preventDefault(); await addDoc(collection(db, 'servicios'), { name: document.getElementById('new-srv-name').value, price: document.getElementById('new-srv-price').value }); e.target.reset(); });
+            document.getElementById('form-add-barber').addEventListener('submit', async (e) => { e.preventDefault(); await addDoc(collection(db, 'equipo'), { name: document.getElementById('new-barber-name').value, role: document.getElementById('new-barber-role').value }); e.target.reset(); });
+            document.getElementById('form-add-product').addEventListener('submit', async (e) => { 
+                e.preventDefault(); 
+                await addDoc(collection(db, 'productos'), { 
+                    name: document.getElementById('new-prod-name').value, 
+                    category: document.getElementById('new-prod-category').value.trim(),
+                    price: Number(document.getElementById('new-prod-price').value), 
+                    stock: Number(document.getElementById('new-prod-stock').value), 
+                    img: document.getElementById('new-prod-img').value 
+                }); 
+                e.target.reset(); 
+                alert("Producto guardado con éxito");
+            });
+
+            window.deleteDocItem = async (colName, id) => { if(confirm("¿Eliminar elemento?")) await deleteDoc(doc(db, colName, id)); };
+            window.updateStock = async (id, change) => {
+                const ref = doc(db, 'productos', id);
+                const d = await getDoc(ref); if (d.exists() && (d.data().stock + change) >= 0) await updateDoc(ref, { stock: d.data().stock + change });
+            };
+
+            document.getElementById('form-pos-service').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const today = new Date().toISOString().split('T')[0];
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                try {
+                    await addDoc(collection(db, 'citas_pedidos'), {
+                        name: '💅 ' + (document.getElementById('pos-service-client').value || 'Cliente Salón'),
+                        service: document.getElementById('pos-service-select').value,
+                        barber: document.getElementById('pos-barber-select').value,
+                        date: today, time: time, status: 'pagado', type: 'servicio_local', createdAt: new Date().toISOString()
+                    });
+                    alert("Cobro de servicio registrado."); e.target.reset();
+                } catch (err) { alert(err.message); }
+            });
+
+            document.getElementById('form-pos-product').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const val = document.getElementById('pos-product-select').value;
+                if(!val) return;
+                const [pId, pName, pPrice, pStock] = val.split('|');
+                const qty = parseInt(document.getElementById('pos-product-qty').value);
+                if(qty > parseInt(pStock)) return alert("Stock insuficiente.");
+
+                const today = new Date().toISOString().split('T')[0];
+                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                try {
+                    await window.updateStock(pId, -qty);
+                    await addDoc(collection(db, 'citas_pedidos'), {
+                        name: '🛍️ Venta Tienda',
+                        service: `${qty}x ${pName} $${qty * parseInt(pPrice)}`,
+                        barber: 'Caja Local', date: today, time: time, status: 'pagado', type: 'producto_local', createdAt: new Date().toISOString()
+                    });
+                    alert("Venta registrada."); e.target.reset();
+                } catch (err) { alert(err.message); }
+            });
+
+            window.showToast = (message) => {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = "bg-[#0B1121] border border-neon-cyan text-white px-4 py-3 rounded-xl shadow-[0_0_15px_rgba(0,212,255,0.4)] flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-auto";
+            
+                toast.innerHTML = `
+                    <i data-lucide="check-circle" class="text-neon-cyan" size="20"></i>
+                    <span class="text-sm font-medium tracking-wide">${message}</span>
+                `;
+
+                container.appendChild(toast);
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-10', 'opacity-0');
+                }, 10);
+
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-x-10');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            };
+
+            window.addToCart = (id, name, price) => {
+                const item = cart.find(i => i.id === id);
+                if(item) {
+                    item.qty++;
+                } else {
+                    cart.push({id, name, price, qty: 1});
+                }
+                window.renderCart();
+                window.showToast(`¡Añadido: ${name}! ✨`);
+            };
+
+            window.removeFromCart = (index) => {
+                cart.splice(index, 1);
+                window.renderCart();
+            };
+
+            window.renderCart = () => {
+                const container = document.getElementById('cart-items-list');
+                const totalLabel = document.getElementById('cart-total-value');
+                const subtotalLabel = document.getElementById('cart-subtotal');
+            
+                if (!container) return;
+
+                if (cart.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500 py-10">El carrito está vacío</p>';
+                    if(totalLabel) totalLabel.innerText = "RD$ 0";
+                    if(subtotalLabel) subtotalLabel.innerText = "RD$ 0";
+                    return;
+                }
+
+                let grandTotal = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const subtotal = item.price * item.qty;
+                    grandTotal += subtotal;
+                    return `
+                        <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 group mb-2">
+                            <div>
+                                <p class="text-white text-sm font-medium">${item.name}</p>
+                                <p class="text-xs text-gray-400">${item.qty} x RD$ ${item.price}</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-white font-bold text-sm">RD$ ${subtotal}</span>
+                                <button onclick="window.removeFromCart(${index})" class="text-red-500 hover:bg-red-500/10 p-1 rounded transition">
+                                    <i data-lucide="trash-2" size="16"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                if(totalLabel) totalLabel.innerText = `RD$ ${grandTotal}`;
+                if(subtotalLabel) subtotalLabel.innerText = `RD$ ${grandTotal}`;
+                lucide.createIcons();
+            };
+
+            window.checkoutWhatsApp = () => {
+                if (cart.length === 0) {
+                    alert("Tu carrito está vacío. ¡Añade algunos productos primero!");
+                    return;
+                }
+
+                const telefono = "18299135723";
+                let total = 0;
+                
+                let mensaje = `*🛍️ NUEVO PEDIDO - LORHELS NAILS SUPPLY*\n`;
+                mensaje += `------------------------------------------\n\n`;
+
+                cart.forEach((item, index) => {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    mensaje += `*${index + 1}.* ${item.name}\n`;
+                    mensaje += `   Cant: ${item.qty} x RD$ ${item.price}\n`;
+                    mensaje += `   *Subtotal: RD$ ${subtotal}*\n\n`;
+                });
+
+                mensaje += `------------------------------------------\n`;
+                mensaje += `*💰 TOTAL A PAGAR: RD$ ${total}*\n\n`;
+                mensaje += `Hola, me gustaría confirmar la disponibilidad de estos productos para pasar a recogerlos o solicitar envío.`;
+
+                const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    
+                window.open(url, '_blank');
+            };
+
+            document.getElementById('booking-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const srv = document.querySelector('input[name="service"]:checked'); if(!srv) return alert("Elige un servicio");
+                const b = { 
+                    service: srv.value, barber: document.getElementById('book-barber').value, 
+                    date: document.getElementById('book-date').value, time: document.getElementById('book-time').value, 
+                    name: document.getElementById('book-name').value, phone: document.getElementById('book-phone').value, 
+                    status: 'pendiente', type: 'cita_web', createdAt: new Date().toISOString() 
+                };
+                try {
+                    const docRef = await addDoc(collection(db, 'citas_pedidos'), b);
+                    window.open(`https://wa.me/18299135723?text=${encodeURIComponent(`💅 *RESERVA LORHELS NAILS*\n\n👤 ${b.name}\n✨ ${b.service}\n📅 ${b.date} - ${b.time}\n👩‍💼 Esp: ${b.barber}\n\nID: ${docRef.id}`)}`, '_blank');
+                    showView('home'); e.target.reset();
+                } catch (err) { alert(err.message); }
+            });
+
+            const dateInput = document.getElementById('book-date');
+            const horasBase = ["09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM"];
+            if(dateInput) {
+                dateInput.min = new Date().toISOString().split('T')[0];
+                dateInput.addEventListener('change', (e) => {
+                    const fecha = e.target.value; const sHora = document.getElementById('book-time'); const pnl = document.getElementById('availability-status');
+                    sHora.innerHTML = '<option value="">Cargando...</option>';
+                    onSnapshot(query(collection(db, 'citas_pedidos')), (snap) => {
+                        const ocupados = []; snap.forEach(doc => { const d = doc.data(); if(d.date === fecha && d.status !== 'cancelada') ocupados.push(d.time); });
+                        sHora.innerHTML = ''; pnl.innerHTML = `<div class="grid grid-cols-2 gap-2"></div>`; const grid = pnl.querySelector('div');
+                        horasBase.forEach(h => {
+                            const o = ocupados.includes(h);
+                            if(!o) sHora.innerHTML += `<option value="${h}">${h}</option>`;
+                            grid.innerHTML += `<div class="p-2 text-[10px] text-center rounded-lg border font-bold ${o ? 'bg-red-500/10 border-red-500/40 text-red-500 line-through' : 'bg-slate-800 border-slate-700 text-gray-400'}">${h}</div>`;
+                        });
+                    });
+                });
+            }
+
+            function syncAdminData() {
+                onSnapshot(query(collection(db, 'citas_pedidos')), (snap) => {
+                    const list = document.getElementById('appointments-list'); let count = 0, money = 0; list.innerHTML = '';
+                    const today = new Date().toISOString().split('T')[0];
+
+                    snap.forEach(docSnap => {
+                        const d = docSnap.data();
+                        if(d.date === today && d.status !== 'cancelada') {
+                            count++;
+                            if(d.status === 'confirmada' || d.status === 'pagado') money += parseInt(d.service.split('$')[1] || 0);
+                        }
+                    
+                        let bgStatus = 'bg-amber-500/20 text-amber-500';
+                        if(d.status === 'confirmada' || d.status === 'pagado') bgStatus = 'bg-emerald-500/20 text-emerald-500';
+                        if(d.status === 'cancelada') bgStatus = 'bg-red-500/20 text-red-500 line-through';
+
+                        list.innerHTML += `
+                            <tr class="border-b border-slate-700/50 hover:bg-slate-800/50">
+                                <td class="px-6 py-4"><p class="font-bold text-white">${d.name}</p><p class="text-[10px] text-gray-500">${d.phone || 'N/A'}</p></td>
+                                <td class="px-6 py-4"><p class="text-sm text-gray-300">${d.service}</p><p class="text-[10px] text-neon-cyan font-bold uppercase">${d.barber}</p></td>
+                                <td class="px-6 py-4"><p class="text-sm font-bold">${d.date}</p><p class="text-xs text-gray-500">${d.time}</p></td>
+                                <td class="px-6 py-4"><span class="px-2 py-1 rounded text-[10px] font-bold uppercase ${bgStatus}">${d.status}</span></td>
+                                <td class="px-6 py-4 text-right">
+                                    ${d.status === 'pendiente' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'confirmada')" class="p-2 text-neon-blue hover:bg-blue-900/30 rounded" title="Confirmar"><i data-lucide="check" size="16"></i></button>` : ''}
+                                    ${d.status === 'confirmada' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'pagado')" class="p-2 text-emerald-400 hover:bg-emerald-900/30 rounded" title="Marcar Pagado"><i data-lucide="dollar-sign" size="16"></i></button>` : ''}
+                                    ${d.status !== 'cancelada' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'cancelada')" class="p-2 text-red-400 hover:bg-red-900/30 rounded" title="Cancelar"><i data-lucide="x" size="16"></i></button>` : ''}
+                                </td>
+                            </tr>`;
+                        });
+                        document.getElementById('stat-count').innerText = count; 
+                        document.getElementById('stat-revenue').innerText = 'RD$ ' + money;
+                        lucide.createIcons();
+                    });
+                }
+                window.setApptStatus = async (id, status) => { if(status === 'cancelada' && !confirm("¿Cancelar registro?")) return; await updateDoc(doc(db, 'citas_pedidos', id), { status }); };
+        </script>
+
+        <footer class="p-6 text-center text-slate-500 text-sm border-t border-slate-800 mt-auto">
+            <a href="https://handhels-programmer.github.io/LorHels-Systems" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 font-medium">
+                LorHels Systems
+            </a>
+            &copy; 2026 - Soluciones Digitales a Medida
+        </footer>
+    </body>
+</html>
