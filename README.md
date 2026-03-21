@@ -34,5 +34,3 @@
 | **Estilos** | Dar el aspecto neón y moderno | Tailwind CSS |
 | **Iconografía** | Símbolos visuales (carrito, check, login) | Lucide Icons |
 | **Lógica** | Sumar precios, abrir modales, enviar datos | JavaScript (Vanilla) |
-
----
