@@ -2,35 +2,23 @@
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+Actualmente tenemos una **Single Page Application (SPA)** de nivel profesional que integra desarrollo frontend moderno con base de datos en la nube en tiempo real.
 
-### 1. Núcleo de Datos (Firebase Backend)
-* **Base de Datos (Firestore):** Utilizas una base de datos NoSQL para almacenar el catálogo de productos (nombre, precio, imagen, descripción).
-* **Autenticación:** Un sistema de login para separar la vista del cliente de las funciones críticas de administración.
-* **Sincronización:** El catálogo se actualiza automáticamente en la web cada vez que haces un cambio en la base de datos, sin necesidad de refrescar.
+### 1. Arquitectura del Sistema y Módulos Activos
 
-### 2. Interfaz de Usuario (Frontend)
-* **Estética "Cyberpunk/Luxury":** Un diseño oscuro con acentos en azul neón (`#00D4FF`) y fuentes modernas, construido totalmente con **Tailwind CSS**.
-* **Navegación Dinámica:** Un sistema que oculta y muestra secciones (Inicio, Catálogo, Admin) manipulando el DOM con JavaScript, lo que hace que la carga sea instantánea.
-* **Diseño Responsivo:** Menús y rejillas de productos que se adaptan perfectamente a celulares y computadoras.
-
-### 3. Sistema de Ventas (Carrito de Compras)
-* **Lógica de Estado:** Un arreglo (`array`) en JavaScript que rastrea qué productos elige el usuario y sus cantidades.
-* **Cálculos en Tiempo Real:** Suma automática de subtotales y total general.
-* **Feedback Visual:** El sistema de **Toasts** (notificaciones flotantes) que acabamos de añadir para confirmar acciones al usuario.
-
-### 4. Panel Administrativo (CMS)
-* **Gestor de Inventario:** Un formulario para subir nuevos productos directamente a Firebase.
-* **Control de Catálogo:** Funciones para editar o eliminar productos existentes en tiempo real.
-* **Seguridad Básica:** Protección de la vista administrativa mediante validación de credenciales.
+* **Sistema de Navegación por Estado (SPA):** Controlado dinámicamente mediante la función `window.showView(viewId)`. Cambia entre Inicio, Reservas, Tienda y Panel de Administración de manera instantánea manipulando clases de Tailwind (`active-view` / `hidden-view`) sin recargar el navegador.
+* **Tienda Supply Automatizada por Categorías:** Los productos se agrupan en tiempo real mediante un reductor en JavaScript según el campo `category` registrado. Cuenta con una barra de búsqueda reactiva (`oninput`) que filtra el catálogo localmente combinando texto y categorías activas.
+* **Carrito de Compras Premium y Localizado:** Un sistema basado en un arreglo (`cart`) estructurado en dos columnas (`lg:grid-cols-12`) que sitúa el pedido al lado derecho en pantallas grandes. Realiza cálculos automáticos de subtotal y total general, renderiza dinámicamente el HTML e incluye el nuevo **Sistema de Notificaciones Flotantes (Toasts)** animado con Tailwind para dar feedback visual inmediato sin pausar la pantalla.
+* **Integración de Pasarela de Despacho (WhatsApp):** La función `window.checkoutWhatsApp()` procesa el arreglo del carrito, desglosa cantidades, precios individuales y subtotales, e inyecta un recibo limpio y codificado mediante `encodeURIComponent` hacia la API de WhatsApp.
+* **Panel Administrativo y Agenda (CMS):** Un módulo protegido por estados de autenticación que permite la inyección directa de nuevos Servicios, Especialistas y Productos (con especificación de stock, precio numérico y categoría) directamente a colecciones indexadas.
 
 ---
 
-### 📊 Resumen de Flujo de Datos
+### 📦 Resumen de la Ficha Técnica actual
 
-| Componente | Función Principal | Tecnología |
-| :--- | :--- | :--- |
-| **Almacenamiento** | Guardar fotos y datos de productos | Firebase Firestore |
-| **Estilos** | Dar el aspecto neón y moderno | Tailwind CSS |
-| **Iconografía** | Símbolos visuales (carrito, check, login) | Lucide Icons |
-| **Lógica** | Sumar precios, abrir modales, enviar datos | JavaScript (Vanilla) |
+| Módulo | Componente Técnico | Propósito en el Código |
+| --- | --- | --- |
+| **Diseño** | Tailwind CSS + Lucide | Estética responsiva Cyberpunk/Luxury e iconografía SVG dinámica. |
+| **Reactividad** | `onSnapshot` (Firebase) | Sincronización asíncrona bidireccional inmediata de inventario y citas. |
+| **Estructura** | JavaScript ES6 Modules | Encapsulamiento de lógica avanzada (requiere vinculación explícita a `window`). |
+| **UX Avanzado** | DOM Injection + CSS Keyframes | Renderizado de cuadrículas simétricas (`grid-cols-2`) y Toasts animados. |
