@@ -2,23 +2,33 @@
 
 ---
 
-Actualmente tenemos una **Single Page Application (SPA)** de nivel profesional que integra desarrollo frontend moderno con base de datos en la nube en tiempo real.
+## 🏗️ Arquitectura y Tecnologías Core
 
-### 1. Arquitectura del Sistema y Módulos Activos
+La aplicación está diseñada bajo un enfoque de **Desarrollo Serverless Moderno**:
 
-* **Sistema de Navegación por Estado (SPA):** Controlado dinámicamente mediante la función `window.showView(viewId)`. Cambia entre Inicio, Reservas, Tienda y Panel de Administración de manera instantánea manipulando clases de Tailwind (`active-view` / `hidden-view`) sin recargar el navegador.
-* **Tienda Supply Automatizada por Categorías:** Los productos se agrupan en tiempo real mediante un reductor en JavaScript según el campo `category` registrado. Cuenta con una barra de búsqueda reactiva (`oninput`) que filtra el catálogo localmente combinando texto y categorías activas.
-* **Carrito de Compras Premium y Localizado:** Un sistema basado en un arreglo (`cart`) estructurado en dos columnas (`lg:grid-cols-12`) que sitúa el pedido al lado derecho en pantallas grandes. Realiza cálculos automáticos de subtotal y total general, renderiza dinámicamente el HTML e incluye el nuevo **Sistema de Notificaciones Flotantes (Toasts)** animado con Tailwind para dar feedback visual inmediato sin pausar la pantalla.
-* **Integración de Pasarela de Despacho (WhatsApp):** La función `window.checkoutWhatsApp()` procesa el arreglo del carrito, desglosa cantidades, precios individuales y subtotales, e inyecta un recibo limpio y codificado mediante `encodeURIComponent` hacia la API de WhatsApp.
-* **Panel Administrativo y Agenda (CMS):** Un módulo protegido por estados de autenticación que permite la inyección directa de nuevos Servicios, Especialistas y Productos (con especificación de stock, precio numérico y categoría) directamente a colecciones indexadas.
+* **Frontend Estilizado:** Uso de **Tailwind CSS** con configuración extendida para una estética premium y oscura (`#0F172A`) con acentos en luces neón, optimizado para ser 100% responsivo.
+* **Motor Base de Datos (Firebase Firestore):** Conexión activa en tiempo real (`onSnapshot`) que sincroniza instantáneamente el inventario, las citas y el equipo sin necesidad de recargar las páginas.
+* **Capa de Seguridad (Firebase Auth):** Separación estricta entre las vistas públicas y el panel administrativo mediante autenticación por correo y contraseña.
+* **Pasarela de Despacho (WhatsApp API):** Integración nativa para que tanto las reservas como las compras se envíen con plantillas de texto formateadas directamente al número del negocio.
 
 ---
 
-### 📦 Resumen de la Ficha Técnica actual
+## 📄 Desglose Funcional de las 4 Páginas
 
-| Módulo | Componente Técnico | Propósito en el Código |
+Hemos segmentado las responsabilidades del sistema en cuatro archivos independientes:
+
+| Archivo | Rol en el Ecosistema | Lógica e Integraciones JavaScript Incorporadas |
 | --- | --- | --- |
-| **Diseño** | Tailwind CSS + Lucide | Estética responsiva Cyberpunk/Luxury e iconografía SVG dinámica. |
-| **Reactividad** | `onSnapshot` (Firebase) | Sincronización asíncrona bidireccional inmediata de inventario y citas. |
-| **Estructura** | JavaScript ES6 Modules | Encapsulamiento de lógica avanzada (requiere vinculación explícita a `window`). |
-| **UX Avanzado** | DOM Injection + CSS Keyframes | Renderizado de cuadrículas simétricas (`grid-cols-2`) y Toasts animados. |
+| **`index.html`** | **Página de Aterrizaje (Home)** | Presentación de la marca, catálogo estático de servicios principales, navegación fluida a través de enlaces reales y menú móvil interactivo. |
+| **`reserva.html`** | **Subsistema de Citas Web** | Carga dinámica de servicios y especialistas desde Firebase. **Bloqueo dinámico de horarios ocupados** por fecha para evitar duplicados. Envío de la reserva a la base de datos y apertura automática de comprobante en WhatsApp. |
+| **`tienda.html`** | **E-commerce (Supply Shop)** | Buscador reactivo de productos, **generador automático de filtros por categoría**, control de stock disponible en vivo, gestión de estado del carrito de compras (subtotales/totales) y pasarela de pedido vía WhatsApp. |
+| **`admin.html`** | **Panel de Control y POS** | **Filtro de seguridad por Login**. Monitoreo financiero en tiempo real (ingresos del día y contador de movimientos), **Punto de Venta integrado (POS)** para registrar cobros en el local, y consolas de administración (CRUD) para modificar servicios, inventario (con alertas de stock bajo) y staff. |
+
+---
+
+## ⚡ Componentes Globales Reutilizados
+
+En cada archivo mantienes la misma consistencia de interfaz gracias a:
+
+1. **Sistema de Notificaciones Premium (Toasts):** Alertas flotantes personalizadas en la esquina de la pantalla que avisan de forma sutil al usuario cuando un producto se agrega, una cita se confirma o hay un error.
+2. **Biblioteca de Iconos Uniforme:** Uso de **Lucide Icons** para mantener la iconografía limpia y moderna en todas las barras de navegación, botones y tablas.

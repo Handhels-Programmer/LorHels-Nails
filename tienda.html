@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="do">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LorHels Nails | Tienda Supply</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'dark-bg': '#0F172A',
+                            'dark-surface': '#1E293B',
+                            'neon-blue': '#3B82F6',
+                            'neon-cyan': '#00D4FF',
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            brand: ['Playfair Display', 'serif'],
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+            ::-webkit-scrollbar { width: 8px; }
+            ::-webkit-scrollbar-track { background: #0F172A; }
+            ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; }
+            #public-products-grid img { max-width: 100%; display: block; }
+            .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        </style>
+    </head>
+    <body class="bg-dark-bg text-gray-200 min-h-screen selection:bg-neon-blue selection:text-white flex flex-col">
+        <div id="toast-container" class="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+        
+        <nav class="fixed top-0 w-full z-50 glass">
+            <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                    <span class="font-brand text-2xl font-bold tracking-wider text-white">LorHels <span class="text-neon-cyan">Nails</span></span>
+                </a>
+                <div class="hidden md:flex items-center gap-8 font-medium">
+                    <a href="index.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Inicio</a>
+                    <a href="reserva.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Reservar Cita</a>
+                    <a href="tienda.html" class="text-neon-cyan transition uppercase text-sm tracking-wide">Tienda Supply</a>
+                    <a href="admin.html" class="bg-neon-blue text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-500 transition shadow-[0_0_15px_rgba(59,130,246,0.5)] uppercase tracking-wider">Admin</a>
+                </div>
+                <button class="md:hidden text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="menu" size="28"></i></button>
+            </div>
+        </nav>
+
+        <div id="mobile-menu" class="fixed inset-0 z-[60] bg-dark-bg hidden flex-col items-center justify-center gap-10 text-2xl font-brand font-bold">
+            <button class="absolute top-8 right-8 text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="x" size="32"></i></button>
+            <a href="index.html" class="hover:text-neon-cyan transition">Inicio</a>
+            <a href="reserva.html" class="hover:text-neon-cyan transition">Reservar Cita</a>
+            <a href="tienda.html" class="text-neon-cyan transition">Tienda Supply</a>
+            <a href="admin.html" class="text-neon-blue">Panel Admin</a>
+        </div>
+
+        <main class="pt-24 flex-grow">
+            <section class="max-w-7xl mx-auto px-4 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-800 shadow-xl">
+                            <h2 class="text-3xl font-brand font-bold text-white mb-6">Supply Shop</h2>
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    <i data-lucide="search" class="absolute left-4 top-3.5 text-gray-500" size="18"></i>
+                                    <input type="text" id="product-search" oninput="window.renderProducts()" placeholder="Buscar producto..." 
+                                    class="w-full bg-[#0B1121] border border-slate-700 p-3 pl-12 rounded-xl outline-none focus:border-neon-cyan text-white">
+                                </div>
+                                <div id="category-filters" class="flex flex-wrap gap-2">
+                                    </div>
+                            </div>
+                        </div>
+                        <div id="public-products-grid" class="space-y-10">
+                            </div>
+                    </div>
+                    
+                    <aside class="lg:col-span-4">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 sticky top-28 shadow-2xl">
+                            <div class="flex items-center gap-3 mb-6 border-b border-slate-800 pb-4">
+                                <i data-lucide="shopping-bag" class="text-neon-cyan"></i>
+                                <h3 class="font-bold text-xl">Tu Pedido</h3>
+                            </div>
+                            <div id="cart-items-list" class="space-y-4 max-h-[50vh] overflow-y-auto mb-6 custom-scrollbar pr-2">
+                                <p class="text-center text-gray-500 py-10">El carrito está vacío</p>
+                            </div>
+                            <div class="border-t border-slate-800 pt-4 space-y-2">
+                                <div class="flex justify-between text-gray-400 text-sm">
+                                    <span>Subtotal</span>
+                                    <span id="cart-subtotal">RD$ 0</span>
+                                </div>
+                                <div class="flex justify-between text-white font-bold text-lg pt-2">
+                                    <span>Total</span>
+                                    <span id="cart-total-value" class="text-neon-cyan">RD$ 0</span>
+                                </div>
+                            </div>
+                            <button onclick="checkoutWhatsApp()" class="w-full mt-6 bg-green-500 hover:bg-green-600 text-white py-4 rounded-2xl font-bold transition flex items-center justify-center gap-2 shadow-lg shadow-green-900/20">
+                                <i data-lucide="message-circle"></i> Enviar por WhatsApp
+                            </button>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+        </main>
+
+        <footer class="p-6 text-center text-slate-500 text-sm border-t border-slate-800 mt-auto">
+            <p>&copy; 2026
+                <a href="https://lorhels.web.app" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 font-medium">
+                LorHels Systems
+            </a> Todos los derechos reservados.</p>
+            <p style="margin-top: 10px; color: #4b5563;">Desarrollado con pasión para brindar las mejores soluciones.</p>
+        </footer>
+
+        <script type="module">
+            import { db } from './firebaseconfig.js';
+            import { collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+            let cart = [];
+            let allProducts = []; 
+            let activeCategory = 'Todas';
+
+            // Inicializar Iconos
+            lucide.createIcons();
+
+            // Toggle Menú Móvil
+            window.toggleMobileMenu = () => {
+                const m = document.getElementById('mobile-menu'); 
+                m.classList.toggle('hidden'); 
+                m.classList.toggle('flex');
+            };
+
+            // Sistema de Notificaciones
+            window.showToast = (message) => {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+
+                const toast = document.createElement('div');
+                toast.className = "bg-[#0B1121] border border-neon-cyan text-white px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(0,212,255,0.3)] flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-auto";
+                
+                toast.innerHTML = `
+                    <i data-lucide="check-circle" class="text-neon-cyan" size="18"></i>
+                    <span class="text-xs font-semibold tracking-wide">${message}</span>
+                `;
+
+                container.appendChild(toast);
+                lucide.createIcons();
+
+                setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-x-10');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            };
+
+            // Cargar Productos desde Firebase
+            onSnapshot(collection(db, 'productos'), (snap) => {
+                allProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.renderProducts();
+            });
+
+            // Renderizar y Filtrar Productos
+            window.renderProducts = () => {
+                const grid = document.getElementById('public-products-grid');
+                const filterContainer = document.getElementById('category-filters');
+                const searchTerm = (document.getElementById('product-search')?.value || "").toLowerCase();
+                
+                if(!grid) return;
+
+                const categories = ['Todas', ...new Set(allProducts.map(p => p.category).filter(c => c))];
+                if(filterContainer) {
+                    filterContainer.innerHTML = categories.map(cat => `
+                        <button onclick="window.filterByCat('${cat}')" 
+                                class="px-4 py-1.5 rounded-full text-xs font-bold transition ${activeCategory === cat ? 'bg-neon-cyan text-black' : 'bg-slate-800 text-gray-400 hover:bg-slate-700'}">
+                            ${cat}
+                        </button>
+                    `).join('');
+                }
+
+                const filtered = allProducts.filter(p => {
+                    const matchesSearch = p.name.toLowerCase().includes(searchTerm);
+                    const matchesCat = activeCategory === 'Todas' || p.category === activeCategory;
+                    return matchesSearch && matchesCat && p.stock > 0;
+                });
+
+                grid.innerHTML = '';
+                
+                const grouped = filtered.reduce((acc, p) => {
+                    const cat = p.category || 'General';
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(p);
+                    return acc;
+                }, {});
+
+                for (const [catName, prods] of Object.entries(grouped)) {
+                    const section = document.createElement('div');
+                    section.className = "mb-12 w-full";
+                    section.innerHTML = `
+                        <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2 tracking-widest uppercase">
+                            <span class="w-2 h-2 bg-neon-cyan rounded-full animate-pulse"></span> ${catName}
+                        </h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                            ${prods.map(prod => {
+                                const escapedName = prod.name.replace(/'/g, "\\'");
+                                return `
+                                <div class="bg-dark-surface rounded-2xl border border-slate-800 overflow-hidden flex flex-col group hover:border-neon-cyan/50 transition-all duration-300 shadow-lg">
+                                    <div class="aspect-square w-full overflow-hidden bg-slate-900">
+                                        <img src="${prod.img || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=500&h=500&fit=crop'}" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                                    </div>
+                                    <div class="p-3 flex flex-col flex-grow">
+                                        <h4 class="text-[13px] text-gray-200 font-semibold leading-tight h-10 line-clamp-2">${prod.name}</h4>
+                                        <div class="mt-auto pt-2">
+                                            <p class="text-neon-cyan font-bold text-sm">RD$ ${prod.price}</p>
+                                            <p class="text-[10px] text-gray-500 mb-3 uppercase">Disponibles: ${prod.stock}</p>
+                                            <button onclick="window.addToCart('${prod.id}', '${escapedName}', ${prod.price})" 
+                                                    class="w-full bg-[#0B1121] hover:bg-neon-cyan hover:text-black py-2 rounded-xl text-[11px] font-black transition-all border border-slate-700 hover:border-neon-cyan">
+                                                AGREGAR
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>`;
+                            }).join('')}
+                        </div>
+                    `;
+                    grid.appendChild(section);
+                }
+                lucide.createIcons();
+            };
+
+            window.filterByCat = (cat) => {
+                activeCategory = cat;
+                window.renderProducts();
+            };
+
+            // Lógica del Carrito
+            window.addToCart = (id, name, price) => {
+                const item = cart.find(i => i.id === id);
+                if(item) item.qty++;
+                else cart.push({id, name, price, qty: 1});
+                
+                window.renderCart();
+                window.showToast(`¡Añadido: ${name}! ✨`);
+            };
+
+            window.removeFromCart = (index) => {
+                cart.splice(index, 1);
+                window.renderCart();
+            };
+
+            window.renderCart = () => {
+                const container = document.getElementById('cart-items-list');
+                const totalLabel = document.getElementById('cart-total-value');
+                const subtotalLabel = document.getElementById('cart-subtotal');
+                
+                if (!container) return;
+
+                if (cart.length === 0) {
+                    container.innerHTML = '<p class="text-center text-gray-500 py-10 text-sm italic">El carrito está vacío</p>';
+                    if(totalLabel) totalLabel.innerText = "RD$ 0";
+                    if(subtotalLabel) subtotalLabel.innerText = "RD$ 0";
+                    return;
+                }
+
+                let grandTotal = 0;
+                container.innerHTML = cart.map((item, index) => {
+                    const subtotal = item.price * item.qty;
+                    grandTotal += subtotal;
+                    return `
+                        <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 group mb-2">
+                            <div>
+                                <p class="text-white text-xs font-semibold truncate max-w-[150px]">${item.name}</p>
+                                <p class="text-[11px] text-gray-400">${item.qty} x RD$ ${item.price}</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-white font-bold text-xs">RD$ ${subtotal}</span>
+                                <button onclick="window.removeFromCart(${index})" class="text-red-500 hover:bg-red-500/10 p-1 rounded transition">
+                                    <i data-lucide="trash-2" size="14"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                if(totalLabel) totalLabel.innerText = `RD$ ${grandTotal}`;
+                if(subtotalLabel) subtotalLabel.innerText = `RD$ ${grandTotal}`;
+                lucide.createIcons();
+            };
+
+            // Checkout por WhatsApp y Firebase
+            window.checkoutWhatsApp = async () => {
+                if (cart.length === 0) {
+                    window.showToast("El carrito está vacío ⚠️");
+                    return;
+                }
+
+                const telefono = "18299135723";
+                let total = 0;
+                let mensaje = `*🛍️ NUEVO PEDIDO - LORHELS NAILS SUPPLY*\n`;
+                mensaje += `------------------------------------------\n\n`;
+
+                cart.forEach((item, index) => {
+                    const subtotal = item.price * item.qty;
+                    total += subtotal;
+                    mensaje += `*${index + 1}.* ${item.name}\n`;
+                    mensaje += `   Cant: ${item.qty} x RD$ ${item.price}\n`;
+                    mensaje += `   *Subtotal: RD$ ${subtotal}*\n\n`;
+                });
+
+                mensaje += `------------------------------------------\n`;
+                mensaje += `*💰 TOTAL A PAGAR: RD$ ${total}*\n\n`;
+                mensaje += `_Hola, confirmo mi pedido web para procesar disponibilidad y coordinar la entrega._`;
+
+                try {
+                    const today = new Date().toISOString().split('T')[0];
+                    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    await addDoc(collection(db, 'citas_pedidos'), {
+                        name: '📦 Pedido Web',
+                        service: `Total: $${total} (${cart.length} items)`,
+                        barber: 'Tienda Online', date: today, time: time, status: 'pendiente', type: 'pedido_web', items: cart, createdAt: new Date().toISOString()
+                    });
+                    
+                    cart = [];
+                    window.renderCart();
+                    window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                } catch(e) { 
+                    window.showToast("Error al registrar pedido ❌"); 
+                }
+            };
+        </script>
+    </body>
+</html>

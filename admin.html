@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="do">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LorHels Nails | Premium Salon & Supply</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'dark-bg': '#0F172A',
+                            'dark-surface': '#1E293B',
+                            'neon-blue': '#3B82F6',
+                            'neon-cyan': '#00D4FF',
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                            brand: ['Playfair Display', 'serif'],
+                        }
+                    }
+                }
+            }
+        </script>
+        <style>
+            .text-gradient { background: linear-gradient(to right, #3B82F6, #00D4FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+            .glass { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+            .page-transition { transition: all 0.4s ease; }
+            .hidden-view { display: none !important; opacity: 0; }
+            .active-view { opacity: 1; animation: fadeIn 0.4s ease; }
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+            ::-webkit-scrollbar { width: 8px; }
+            ::-webkit-scrollbar-track { background: #0F172A; }
+            ::-webkit-scrollbar-thumb { background: #3B82F6; border-radius: 10px; }
+            #public-products-grid img { max-width: 100%; display: block; }
+            .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        </style>
+    </head>
+    <body class="bg-dark-bg text-gray-200 min-h-screen selection:bg-neon-blue selection:text-white">
+        <div id="toast-container" class="fixed bottom-5 right-5 md:bottom-10 md:right-10 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+        <nav class="fixed top-0 w-full z-50 glass">
+            <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
+                    <span class="font-brand text-2xl font-bold tracking-wider text-white">LorHels <span class="text-neon-cyan">Nails</span></span>
+                </div>
+                <div class="hidden md:flex items-center gap-8 font-medium">
+                    <a href="index.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Inicio</a>
+                    <a href="reserva.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Reservar Cita</a>
+                    <a href="tienda.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Tienda Supply</a>
+                    <a href="admin.html" class="bg-neon-blue text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-500 transition shadow-[0_0_15px_rgba(59,130,246,0.5)] uppercase tracking-wider">Admin</a>
+                </div>
+                <button class="md:hidden text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="menu" size="28"></i></button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="fixed inset-0 z-[60] bg-dark-bg hidden flex-col items-center justify-center gap-10 text-2xl font-brand font-bold">
+            <button class="absolute top-8 right-8 text-neon-cyan" onclick="toggleMobileMenu()"><i data-lucide="x" size="32"></i></button>
+            <a href="index.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Inicio</a>
+            <a href="reserva.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Reservar Cita</a>
+            <a href="tienda.html" class="text-gray-300 hover:text-neon-cyan transition uppercase text-sm tracking-wide">Tienda Supply</a>
+            <a href="admin.html" class="bg-neon-blue text-white px-6 py-2 rounded-full font-bold text-sm hover:bg-blue-500 transition shadow-[0_0_15px_rgba(59,130,246,0.5)] uppercase tracking-wider">Admin</a>
+        </div>
+        <main class="pt-20">
+            <section id="view-login" class="page-transition hidden-view flex items-center justify-center min-h-[70vh] px-4">
+                <div class="bg-dark-surface p-8 rounded-3xl border border-slate-700 w-full max-w-md">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-brand font-bold text-white">Acceso Admin</h2>
+                    </div>
+                    <form id="login-form" class="space-y-4">
+                        <input type="email" id="login-email" placeholder="Correo" required class="w-full bg-[#0B1121] border border-slate-600 rounded-xl p-4 text-white outline-none focus:border-neon-blue">
+                        <input type="password" id="login-pass" placeholder="Contraseña" required class="w-full bg-[#0B1121] border border-slate-600 rounded-xl p-4 text-white outline-none focus:border-neon-blue">
+                        <button type="submit" class="w-full bg-neon-blue text-white py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-blue-500">Entrar</button>
+                    </form>
+                </div>
+            </section>
+            <section id="view-admin" class="page-transition hidden-view p-4 md:p-8 max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6">
+                    <div>
+                        <h1 class="text-3xl font-brand font-bold text-white">Panel de Control</h1>
+                        <p class="text-gray-400 mt-1">Gestión de Salón & Supply</p>
+                    </div>
+                    <button onclick="window.logout()" class="text-sm text-red-400 hover:text-white flex items-center gap-2 px-4 py-2 bg-red-500/10 rounded-full transition border border-red-500/30"><i data-lucide="log-out" size="16"></i> Cerrar Sesión</button>
+                </div>
+                <div class="flex gap-6 mb-8 border-b border-slate-700 pb-4 overflow-x-auto scrollbar-hide">
+                    <button onclick="switchAdminTab('agenda')" id="tab-agenda" class="text-neon-cyan font-bold uppercase tracking-widest text-sm border-b-2 border-neon-cyan pb-4 -mb-4 whitespace-nowrap">📅 Agenda & Ventas</button>
+                    <button onclick="switchAdminTab('pos')" id="tab-pos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">💳 POS (Caja)</button>
+                    <button onclick="switchAdminTab('servicios')" id="tab-servicios" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">💅 Servicios</button>
+                    <button onclick="switchAdminTab('productos')" id="tab-productos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">🛍️ Tienda Supply</button>
+                    <button onclick="switchAdminTab('barberos')" id="tab-barberos" class="text-gray-500 hover:text-gray-300 font-bold uppercase tracking-widest text-sm pb-4 -mb-4 whitespace-nowrap">👥 Equipo</button>
+                </div>
+                <div id="admin-agenda" class="admin-panel block">
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="bg-dark-surface border border-slate-700 p-6 rounded-2xl"><p class="text-xs text-gray-400 uppercase font-bold mb-2">Movimientos Hoy</p><p id="stat-count" class="text-4xl font-bold text-neon-blue">0</p></div>
+                        <div class="bg-dark-surface border border-slate-700 p-6 rounded-2xl"><p class="text-xs text-gray-400 uppercase font-bold mb-2">Ingresos Estimados</p><p id="stat-revenue" class="text-4xl font-bold text-emerald-400">$0</p></div>
+                    </div>
+                    <div class="bg-dark-surface rounded-2xl border border-slate-700 overflow-hidden overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-[#0B1121] text-gray-400 uppercase font-bold">
+                                <tr><th class="px-6 py-4">Cliente / Pedido</th><th class="px-6 py-4">Detalle</th><th class="px-6 py-4">Fecha/Hora</th><th class="px-6 py-4">Estado</th><th class="px-6 py-4 text-right">Acción</th></tr>
+                            </thead>
+                            <tbody id="appointments-list" class="divide-y divide-slate-700/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="admin-pos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                            <h3 class="font-bold text-lg mb-4 text-neon-cyan flex items-center gap-2"><i data-lucide="scissors"></i> Cobro Servicio Salón</h3>
+                            <form id="form-pos-service" class="space-y-4">
+                                <input type="text" id="pos-service-client" placeholder="Nombre Cliente Local" class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <select id="pos-service-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue"></select>
+                                <select id="pos-barber-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue"></select>
+                                <button type="submit" class="w-full bg-neon-blue hover:bg-blue-500 text-white py-3 rounded-xl font-bold uppercase transition">Registrar Pago</button>
+                            </form>
+                        </div>
+                        <div class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                            <h3 class="font-bold text-lg mb-4 text-emerald-400 flex items-center gap-2"><i data-lucide="shopping-bag"></i> Venta Supply (Local)</h3>
+                            <form id="form-pos-product" class="space-y-4">
+                                <select id="pos-product-select" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-emerald-400"></select>
+                                <input type="number" id="pos-product-qty" placeholder="Cantidad" required min="1" value="1" class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-emerald-400">
+                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl font-bold uppercase transition">Registrar Venta Directa</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-servicios" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-service" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4">Añadir Servicio</h3>
+                                <input type="text" id="new-srv-name" placeholder="Ej: Retoque Acrílico" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-srv-price" placeholder="Precio (RD$)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase">Guardar</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <h3 class="font-bold mb-4">Servicios Activos</h3>
+                            <div id="services-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-productos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-product" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4 text-neon-cyan">Añadir Producto Supply</h3>
+                                <input type="text" id="new-prod-name" placeholder="Ej: Monómero 8oz" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="text" id="new-prod-category" placeholder="Categoría (Ej: Líquidos, Geles, Herramientas)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-prod-price" placeholder="Precio Venta (RD$)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="number" id="new-prod-stock" placeholder="Cantidad en Stock" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <div class="space-y-1">
+                                    <label class="block text-[10px] text-gray-400 font-bold uppercase tracking-wider">Imagen del Producto</label>
+                                    <input type="file" id="new-prod-img" accept="image/*" class="w-full bg-[#0B1121] border border-slate-600 p-2.5 rounded-xl outline-none focus:border-neon-blue text-sm text-gray-400 file:mr-4 file:py-1.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-neon-blue/20 file:text-neon-cyan hover:file:bg-neon-blue/30 file:transition-all cursor-pointer">
+                                </div>
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase hover:bg-blue-500 transition">Guardar Producto</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <h3 class="font-bold mb-4">Inventario Actual</h3>
+                            <div id="products-list" class="space-y-2 max-h-[60vh] overflow-y-auto pr-2"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-barberos" class="admin-panel hidden">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="md:col-span-1">
+                            <form id="form-add-barber" class="bg-dark-surface p-6 rounded-3xl border border-slate-700 space-y-4">
+                                <h3 class="font-bold mb-4">Añadir Especialista</h3>
+                                <input type="text" id="new-barber-name" placeholder="Nombre" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <input type="text" id="new-barber-role" placeholder="Especialidad (Ej: Nail Artist)" required class="w-full bg-[#0B1121] border border-slate-600 p-3 rounded-xl outline-none focus:border-neon-blue">
+                                <button type="submit" class="w-full bg-neon-blue py-3 rounded-xl font-bold uppercase">Agregar</button>
+                            </form>
+                        </div>
+                        <div class="md:col-span-2 bg-dark-surface rounded-3xl border border-slate-700 p-6">
+                            <div id="barbers-list" class="space-y-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script type="module">
+    // 1. IMPORTACIONES
+    import { auth, db } from './firebaseconfig.js';
+    import { uploadToCloudinary } from './cloudinary.js';
+    import { collection, addDoc, onSnapshot, updateDoc, doc, query, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // VARIABLES DE ESTADO INTERNO
+    let isAdmin = false;
+    let allProducts = [];
+
+    // Inicializar iconos estáticos al cargar
+    lucide.createIcons();
+
+    // 2. SISTEMA DE NOTIFICACIONES (TOASTS)
+    window.showToast = (message) => {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = "bg-[#0B1121] border border-neon-cyan text-white px-5 py-3 rounded-xl shadow-[0_0_15px_rgba(0,212,255,0.3)] flex items-center gap-3 transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-auto";
+        
+        toast.innerHTML = `
+            <i data-lucide="check-circle" class="text-neon-cyan" size="18"></i>
+            <span class="text-xs font-semibold tracking-wide">${message}</span>
+        `;
+
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-x-10');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // 3. CONTROL DE VISTAS INTERNAS (LOGIN VS DASHBOARD)
+    window.showView = (viewId) => {
+        document.querySelectorAll('section.page-transition').forEach(s => s.classList.replace('active-view', 'hidden-view'));
+        const target = document.getElementById('view-' + viewId);
+        if(target) { 
+            target.classList.replace('hidden-view', 'active-view'); 
+            window.scrollTo(0, 0); 
+        }
+    };
+
+    window.switchAdminTab = (tabId) => {
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('[id^="tab-"]').forEach(t => {
+            t.classList.remove('text-neon-cyan', 'border-b-2', 'border-neon-cyan');
+            t.classList.add('text-gray-500');
+        });
+        document.getElementById('admin-' + tabId).classList.remove('hidden');
+        const activeTab = document.getElementById('tab-' + tabId);
+        activeTab.classList.add('text-neon-cyan', 'border-b-2', 'border-neon-cyan');
+        activeTab.classList.remove('text-gray-500');
+    };
+
+    window.toggleMobileMenu = () => {
+        const m = document.getElementById('mobile-menu'); 
+        m.classList.toggle('hidden'); 
+        m.classList.toggle('flex');
+    };
+
+    // 4. MANEJO DE SESIÓN Y AUTENTICACIÓN
+    onAuthStateChanged(auth, (user) => {
+        if (user && !user.isAnonymous) { 
+            isAdmin = true; 
+            window.showView('admin');
+            syncAdminData(); 
+            loadConfigData();
+        } else { 
+            isAdmin = false; 
+            window.showView('login');
+        }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            await signInWithEmailAndPassword(auth, document.getElementById('login-email').value, document.getElementById('login-pass').value);
+            window.showToast("Acceso de Administrador concedido 🔑");
+        } catch (err) { 
+            window.showToast("Credenciales incorrectas ❌"); 
+        }
+    });
+    
+    window.logout = () => signOut(auth).then(() => location.reload());
+
+    // 5. CARGA DE CONFIGURACIONES (SERVICIOS, EQUIPO, INVENTARIO)
+    function loadConfigData() {
+        // Colección: Servicios
+        onSnapshot(collection(db, 'servicios'), (snap) => {
+            const adminServ = document.getElementById('services-list');
+            const posServ = document.getElementById('pos-service-select');
+            
+            if(adminServ) adminServ.innerHTML = '';
+            if(posServ) posServ.innerHTML = '<option value="">Selecciona servicio...</option>';
+
+            snap.forEach(docSnap => {
+                const s = docSnap.data();
+                if(adminServ) adminServ.innerHTML += `<div class="flex justify-between items-center p-3 bg-[#0B1121] border border-slate-700 rounded-xl"><div><p class="font-bold text-white text-sm">${s.name}</p><p class="text-xs text-neon-cyan">RD$ ${s.price}</p></div><button onclick="window.deleteDocItem('servicios', '${docSnap.id}')" class="text-red-500 hover:text-red-400 p-2"><i data-lucide="trash-2" size="16"></i></button></div>`;
+                if(posServ) posServ.innerHTML += `<option value="${s.name} $${s.price}">${s.name} - $${s.price}</option>`;
+            });
+            lucide.createIcons();
+        });
+
+        // Colección: Equipo / Especialistas
+        onSnapshot(collection(db, 'equipo'), (snap) => {
+            const adminBarb = document.getElementById('barbers-list');
+            const posBarb = document.getElementById('pos-barber-select');
+            
+            if(adminBarb) adminBarb.innerHTML = '';
+            if(posBarb) posBarb.innerHTML = '<option value="">Atendido por...</option>';
+
+            snap.forEach(docSnap => {
+                const b = docSnap.data();
+                if(adminBarb) adminBarb.innerHTML += `<div class="flex justify-between items-center p-3 bg-[#0B1121] border border-slate-700 rounded-xl"><div><p class="font-bold text-white text-sm">${b.name}</p><p class="text-xs text-gray-500">${b.role}</p></div><button onclick="window.deleteDocItem('equipo', '${docSnap.id}')" class="text-red-500"><i data-lucide="trash-2" size="16"></i></button></div>`;
+                if(posBarb) posBarb.innerHTML += `<option value="${b.name}">${b.name}</option>`;
+            });
+            lucide.createIcons();
+        });
+
+        // Colección: Productos (Inventario)
+        onSnapshot(collection(db, 'productos'), (snap) => {
+            allProducts = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            const adminProd = document.getElementById('products-list');
+            const posProd = document.getElementById('pos-product-select');
+            if(adminProd) adminProd.innerHTML = '';
+            if(posProd) posProd.innerHTML = '<option value="">Selecciona producto...</option>';
+
+            allProducts.forEach(p => {
+                const low = p.stock <= 5;
+                if(adminProd) {
+                    adminProd.innerHTML += `
+                    <div class="flex justify-between items-center p-3 bg-[#0B1121] border ${low ? 'border-amber-500/50' : 'border-slate-700'} rounded-xl mb-2">
+                        <div><p class="font-bold text-white text-sm">${p.name} ${low ? '<span class="text-amber-500 text-[9px] uppercase ml-2 bg-amber-500/10 px-2 rounded">Bajo</span>' : ''}</p><p class="text-xs text-neon-cyan">RD$ ${p.price}</p></div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="window.updateStock('${p.id}', -1)" class="w-6 h-6 bg-slate-800 rounded text-sm font-bold">-</button>
+                            <span class="font-bold text-sm w-6 text-center">${p.stock}</span>
+                            <button onclick="window.updateStock('${p.id}', 1)" class="w-6 h-6 bg-slate-800 rounded text-sm font-bold">+</button>
+                            <button onclick="window.deleteDocItem('productos', '${p.id}')" class="text-red-500 ml-2"><i data-lucide="trash-2" size="16"></i></button>
+                        </div>
+                    </div>`;
+                }
+                if(posProd && p.stock > 0) {
+                    posProd.innerHTML += `<option value="${p.id}|${p.name}|${p.price}|${p.stock}">${p.name} (RD$ ${p.price})</option>`;
+                }
+            });
+            lucide.createIcons();
+        });
+    }
+
+    // 6. GESTIÓN DE ALTAS, BAJAS Y MODIFICACIONES
+    document.getElementById('form-add-service').addEventListener('submit', async (e) => { 
+        e.preventDefault(); 
+        await addDoc(collection(db, 'servicios'), { name: document.getElementById('new-srv-name').value, price: document.getElementById('new-srv-price').value }); 
+        e.target.reset();
+        window.showToast("Servicio añadido con éxito ✨");
+    });
+    
+    document.getElementById('form-add-barber').addEventListener('submit', async (e) => { 
+        e.preventDefault(); 
+        await addDoc(collection(db, 'equipo'), { name: document.getElementById('new-barber-name').value, role: document.getElementById('new-barber-role').value }); 
+        e.target.reset();
+        window.showToast("Especialista agregado al equipo 👥");
+    });
+    
+    document.getElementById('form-add-product').addEventListener('submit', async (e) => { 
+    e.preventDefault(); 
+    
+    // Alerta visual de que el proceso ha comenzado
+    window.showToast("Subiendo imagen y registrando producto... ⏳");
+
+    try {
+        const fileInput = document.getElementById('new-prod-img');
+        const file = fileInput.files[0];
+        
+        let finalImgUrl = "";
+
+        // Si el usuario seleccionó una foto, la subimos a Cloudinary
+        if (file) {
+            finalImgUrl = await uploadToCloudinary(file);
+        }
+
+        // Guardamos en Firestore usando la URL que nos devolvió Cloudinary
+        await addDoc(collection(db, 'productos'), { 
+            name: document.getElementById('new-prod-name').value, 
+            category: document.getElementById('new-prod-category').value.trim(), 
+            price: Number(document.getElementById('new-prod-price').value), 
+            stock: Number(document.getElementById('new-prod-stock').value), 
+            // Si no se subió ninguna foto, asignamos una imagen genérica por defecto
+            img: finalImgUrl || 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?w=500&h=500&fit=crop' 
+        }); 
+
+        e.target.reset(); 
+        window.showToast("¡Producto e imagen guardados con éxito! 🛍️");
+    } catch (error) {
+        console.error(error);
+        window.showToast("Error al procesar el producto o la imagen ❌");
+    }
+});
+
+    window.deleteDocItem = async (colName, id) => { 
+        if(confirm("¿Estás seguro de eliminar este elemento?")) {
+            await deleteDoc(doc(db, colName, id)); 
+            window.showToast("Elemento removido de la base de datos");
+        }
+    };
+    
+    window.updateStock = async (id, change) => {
+        const ref = doc(db, 'productos', id);
+        const d = await getDoc(ref); 
+        if (d.exists() && (d.data().stock + change) >= 0) {
+            await updateDoc(ref, { stock: d.data().stock + change });
+        }
+    };
+
+    // 7. PUNTO DE VENTA (POS CAJA LOCAL)
+    document.getElementById('form-pos-service').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const today = new Date().toISOString().split('T')[0];
+        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        try {
+            await addDoc(collection(db, 'citas_pedidos'), {
+                name: '💅 ' + (document.getElementById('pos-service-client').value || 'Cliente Salón'),
+                service: document.getElementById('pos-service-select').value,
+                barber: document.getElementById('pos-barber-select').value,
+                date: today, time: time, status: 'pagado', type: 'servicio_local', createdAt: new Date().toISOString()
+            });
+            window.showToast("Cobro local registrado en caja 💵");
+            e.target.reset();
+        } catch (err) { window.showToast(err.message); }
+    });
+
+    document.getElementById('form-pos-product').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const val = document.getElementById('pos-product-select').value;
+        if(!val) return;
+        const [pId, pName, pPrice, pStock] = val.split('|');
+        const qty = parseInt(document.getElementById('pos-product-qty').value);
+        if(qty > parseInt(pStock)) return window.showToast("Stock insuficiente en tienda ⚠️");
+
+        const today = new Date().toISOString().split('T')[0];
+        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        try {
+            await window.updateStock(pId, -qty);
+            await addDoc(collection(db, 'citas_pedidos'), {
+                name: '🛍️ Venta Tienda',
+                service: `${qty}x ${pName} $${qty * parseInt(pPrice)}`,
+                barber: 'Caja Local', date: today, time: time, status: 'pagado', type: 'producto_local', createdAt: new Date().toISOString()
+            });
+            window.showToast("Venta directa registrada 💳");
+            e.target.reset();
+        } catch (err) { window.showToast(err.message); }
+    });
+
+    // 8. AGENDA Y MONITOREO DE INGRESOS (DASHBOARD)
+    function syncAdminData() {
+        onSnapshot(query(collection(db, 'citas_pedidos')), (snap) => {
+            const list = document.getElementById('appointments-list'); 
+            if(!list) return;
+            
+            let count = 0, money = 0; 
+            list.innerHTML = '';
+            const today = new Date().toISOString().split('T')[0];
+
+            snap.forEach(docSnap => {
+                const d = docSnap.data();
+                if(d.date === today && d.status !== 'cancelada') {
+                    count++;
+                    if(d.status === 'confirmada' || d.status === 'pagado') {
+                        money += parseInt(d.service.split('$')[1] || 0);
+                    }
+                }
+                
+                let bgStatus = 'bg-amber-500/20 text-amber-500';
+                if(d.status === 'confirmada' || d.status === 'pagado') bgStatus = 'bg-emerald-500/20 text-emerald-500';
+                if(d.status === 'cancelada') bgStatus = 'bg-red-500/20 text-red-500 line-through';
+
+                list.innerHTML += `
+                    <tr class="border-b border-slate-700/50 hover:bg-slate-800/50">
+                        <td class="px-6 py-4"><p class="font-bold text-white text-xs">${d.name}</p><p class="text-[10px] text-gray-500">${d.phone || 'Local'}</p></td>
+                        <td class="px-6 py-4"><p class="text-xs text-gray-300">${d.service}</p><p class="text-[10px] text-neon-cyan font-bold uppercase">${d.barber}</p></td>
+                        <td class="px-6 py-4"><p class="text-xs font-bold">${d.date}</p><p class="text-[10px] text-gray-500">${d.time}</p></td>
+                        <td class="px-6 py-4"><span class="px-2 py-1 rounded text-[9px] font-bold uppercase ${bgStatus}">${d.status}</span></td>
+                        <td class="px-6 py-4 text-right whitespace-nowrap">
+                            ${d.status === 'pendiente' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'confirmada')" class="p-1.5 text-neon-blue hover:bg-blue-900/30 rounded" title="Confirmar"><i data-lucide="check" size="14"></i></button>` : ''}
+                            ${d.status === 'confirmada' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'pagado')" class="p-1.5 text-emerald-400 hover:bg-emerald-900/30 rounded" title="Marcar Pagado"><i data-lucide="dollar-sign" size="14"></i></button>` : ''}
+                            ${d.status !== 'cancelada' ? `<button onclick="window.setApptStatus('${docSnap.id}', 'cancelada')" class="p-1.5 text-red-400 hover:bg-red-900/30 rounded" title="Cancelar"><i data-lucide="x" size="14"></i></button>` : ''}
+                        </td>
+                    </tr>`;
+            });
+            
+            const statCount = document.getElementById('stat-count');
+            const statRevenue = document.getElementById('stat-revenue');
+            if(statCount) statCount.innerText = count; 
+            if(statRevenue) statRevenue.innerText = 'RD$ ' + money;
+            lucide.createIcons();
+        });
+    }
+    
+    window.setApptStatus = async (id, status) => { 
+        if(status === 'cancelada' && !confirm("¿Anular este registro de la agenda?")) return; 
+        await updateDoc(doc(db, 'citas_pedidos', id), { status }); 
+        window.showToast(`Estado cambiado a ${status} 🔄`);
+    };
+</script>
+
+        <footer class="p-6 text-center text-slate-500 text-sm border-t border-slate-800 mt-auto">
+ 
+            <p>&copy; 2026
+                <a href="https://lorhels.web.app" target="\\\\\\\\\\\\\\\_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition-colors duration-200 font-medium">
+                LorHels Systems
+            </a> Todos los derechos reservados.</p>
+            <p style="margin-top: 10px; color: #4b5563;">Desarrollado con pasión para brindar las mejores soluciones.</p>
+        </footer>
+    </body>
+</html>
