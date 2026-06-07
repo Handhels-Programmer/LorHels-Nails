@@ -130,13 +130,21 @@
         </main>
 
         <script type="module">
-    import { db } from './firebaseconfig.js';
+    // 1. IMPORTACIONES (Añadimos 'auth' y las herramientas de Auth de Firebase)
+    import { auth, db } from './firebaseconfig.js';
     import { collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const horasBase = ["09:00 AM", "10:00 AM", "11:00 AM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM", "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM"];
 
     // Inicializar iconos estáticos de Lucide
     lucide.createIcons();
+
+    // AUTENTICACIÓN ANÓNIMA AUTOMÁTICA
+    // Esto le da al cliente un token temporal para que Firestore le permita leer los horarios ocupados
+    signInAnonymously(auth).catch((err) => {
+        console.error("Error al autenticar visitante de forma anónima:", err);
+    });
 
     // Toggle Menú Móvil
     window.toggleMobileMenu = () => {
@@ -168,7 +176,7 @@
         }, 3000);
     };
 
-    // 1. CARGA DE SERVICIOS EN TIEMPO REAL
+    // CARGA DE SERVICIOS EN TIEMPO REAL
     onSnapshot(collection(db, 'servicios'), (snap) => {
         const clientServ = document.getElementById('dynamic-services');
         if(clientServ) clientServ.innerHTML = '';
@@ -188,7 +196,7 @@
         });
     });
 
-    // 2. CARGA DE ESPECIALISTAS EN TIEMPO REAL
+    // CARGA DE ESPECIALISTAS EN TIEMPO REAL
     onSnapshot(collection(db, 'equipo'), (snap) => {
         const clientBarb = document.getElementById('book-barber');
         if(clientBarb) clientBarb.innerHTML = '<option value="Cualquiera">Cualquiera disponible</option>';
@@ -201,10 +209,9 @@
         });
     });
 
-    // 3. BLOQUEO DINÁMICO Y RENDER DE HORARIOS OCUPADOS
+    // BLOQUEO DINÁMICO Y RENDER DE HORARIOS OCUPADOS
     const dateInput = document.getElementById('book-date');
     if(dateInput) {
-        // Evitar que elijan fechas pasadas
         dateInput.min = new Date().toISOString().split('T')[0];
         
         dateInput.addEventListener('change', (e) => {
@@ -235,7 +242,7 @@
         });
     }
 
-    // 4. ENVÍO DEL FORMULARIO DE RESERVA (FIREBASE + WHATSAPP)
+    // ENVÍO DEL FORMULARIO DE RESERVA (FIREBASE + WHATSAPP)
     document.getElementById('booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const srv = document.querySelector('input[name="service"]:checked'); 
@@ -258,10 +265,8 @@
             window.showToast("¡Cita registrada con éxito! Redirigiendo... 🚀");
             e.target.reset();
             
-            // Reestablecer panel de horarios tras limpiar el formulario
             document.getElementById('availability-status').innerHTML = '<p class="text-gray-500 text-sm italic">Selecciona una fecha para ver disponibilidad.</p>';
             
-            // Redirección directa a WhatsApp
             const mensajeWhatsApp = `💅 *RESERVA LORHELS NAILS*\n\n👤 ${b.name}\n✨ ${b.service}\n📅 ${b.date} - ${b.time}\n👩‍💼 Esp: ${b.barber}\n\nID: ${docRef.id}`;
             window.open(`https://wa.me/18299135723?text=${encodeURIComponent(mensajeWhatsApp)}`, '_blank');
         } catch (err) { 
